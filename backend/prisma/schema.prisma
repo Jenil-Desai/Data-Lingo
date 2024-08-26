@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int                 @id @default(autoincrement())
+  fname                String
+  lname                String
+  username             String              @unique
+  email                String              @unique
+  Password             String
+  chats                Chat[]              
+  databaseConnections  DatabaseConnection[]
+}
+
+model Chat {
+  id               Int                @id @default(autoincrement())
+  chatName         String
+  userId           Int
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dbConnectionId   Int
+  dbConnection     DatabaseConnection @relation(fields: [dbConnectionId], references: [id], onDelete: Cascade)
+  startTime        DateTime?           @default(now())
+  endTime          DateTime?
+  messages         Message[]
+}
+
+model Message {
+  id               Int                @id @default(autoincrement())
+  chatId           Int
+  chat             Chat               @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender           String             // 'user' or 'system'
+  messageText      String?
+  sqlQuery         String?
+  queryResult      Json?
+  querySuccess     Boolean            @default(true)
+  timestamp        DateTime           @default(now())
+}
+
+model DatabaseConnection {
+  id                   Int                 @id @default(autoincrement())
+  userId               Int
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  connectionName       String
+  connectionString     String
+  connectionType       String
+  tables               TableMetadata[]
+  chats                Chat[]         
+}
+
+model TableMetadata {
+  id                   Int                 @id @default(autoincrement())
+  dbConnectionId       Int
+  dbConnection         DatabaseConnection @relation(fields: [dbConnectionId], references: [id], onDelete: Cascade)
+  tableName            String
+  columns              ColumnMetadata[]
+}
+
+model ColumnMetadata {
+  id                   Int                 @id @default(autoincrement())
+  tableId              Int
+  table                TableMetadata      @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  columnName           String
+  dataType             String
+}
