@@ -8,7 +8,7 @@ export const ValidateDatabaseCheckBody = async (req: Request, res: Response, nex
 
   const result = DatabaseCheckSchema.safeParse(body);
   if (!result.success) {
-    return res.status(400).json({ error: result.error });
+    return res.status(400).json({ status: false, error: result.error.issues[0].message });
   }
   next();
 };
@@ -18,7 +18,7 @@ export const ValidateDatabaseNewBody = async (req: Request, res: Response, next:
 
   const result = databaseNewSchema.safeParse(body);
   if (!result.success) {
-    return res.status(400).json({ error: result.error });
+    return res.status(400).json({ status: false, error: result.error.issues[0].message });
   }
   next();
 };
@@ -28,7 +28,7 @@ export const ValidateDatabaseDestroyBody = async (req: Request, res: Response, n
 
   const result = databaseDestroySchema.safeParse(body);
   if (!result.success) {
-    return res.status(400).json({ error: result.error });
+    return res.status(400).json({ status: false, error: result.error.issues[0].message });
   }
   next();
 };

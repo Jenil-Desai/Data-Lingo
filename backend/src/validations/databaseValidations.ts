@@ -12,5 +12,5 @@ export const databaseNewSchema = z.object({
 });
 
 export const databaseDestroySchema = z.object({
-  databaseConnectionId: z.number(),
+  databaseConnectionId: z.number().positive(),
 });

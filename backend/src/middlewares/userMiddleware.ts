@@ -7,7 +7,7 @@ export const validateUserRegistrationBody = (req: Request, res: Response, next: 
   const body: userRegisterBody = req.body;
   const result = userRegisterSchema.safeParse(body);
   if (!result.success) {
-    return res.status(400).json({ error: result.error });
+    return res.status(400).json({ status: false, error: result.error.issues[0].message });
   }
   next();
 };
@@ -16,7 +16,7 @@ export const validateUserLoginBody = (req: Request, res: Response, next: NextFun
   const body: userLoginBody = req.body;
   const result = userLoginSchema.safeParse(body);
   if (!result.success) {
-    return res.status(400).json({ error: result.error });
+    return res.status(400).json({ status: false, error: result.error.issues[0].message });
   }
   next();
 };

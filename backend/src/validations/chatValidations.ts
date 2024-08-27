@@ -7,5 +7,9 @@ export const chatNewSchema = z.object({
 
 export const chatEditSchema = z.object({
   chatName: z.string().min(5, { message: "Minimum Lenght Should Be 5" }),
-  chatId: z.number(),
+  chatId: z.number().positive(),
+});
+
+export const chatDestroySchema = z.object({
+  chatId: z.number().positive(),
 });

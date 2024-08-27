@@ -76,20 +76,20 @@ Transforming the way you interact with databases, one conversation at a time! ü
 
 ### üîê Authentication
 
-- **Sign Up**: `POST /api/auth/signup`
-- **Log In**: `POST /api/auth/login`
+- **Sign Up**: `POST /api/user/register`
+- **Log In**: `POST /api/user/login`
 
 ### üåê Database Connections
 
-- **Add Connection**: `POST /api/db/connect`
-- **List Connections**: `GET /api/db/connections`
-- **Delete Connection**: `DELETE /api/db/connection/:id`
+- **Test Connection**: `POST /api/database/test-connection/`
+- **Add Connection**: `POST /api/database/`
+- **Delete Connection**: `DELETE /api/database/`
 
 ### üí¨ Chat & Queries
 
-- **Start Chat**: `POST /api/chat/start`
-- **Send Query**: `POST /api/chat/:id/query`
-- **Get Chat History**: `GET /api/chat/:id`
+- **New Chat**: `POST /api/chat`
+- **Edit Chat**: `PATCH /api/chat`
+- **Delete Chat**: `DELETE /api/chat`
 
 ---
 
@@ -133,6 +133,12 @@ Transforming the way you interact with databases, one conversation at a time! ü
 3. **Access the Application**:
    - **Frontend**: `http://localhost:3000`
    - **Backend API**: `http://localhost:4000`
+
+---
+
+## Version Release
+
+Track the version releases and updates on our Notion page [Here](https://jenil-desai.notion.site/Version-Releases-Data-Lingo-78e5d6970c5b4f6b9ee107d56926bb5c?pvs=4)
 
 ---
 

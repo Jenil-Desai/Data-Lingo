@@ -42,3 +42,24 @@ export const chatEdit: RequestHandler = async (req: Request, res: Response) => {
     return res.status(400).json({ success: false, message: "Invalid Chat ID Else You aren't Owner" });
   }
 };
+
+export const chatDestroy: RequestHandler = async (req: Request, res: Response) => {
+  const { chatId } = req.body;
+  const username = res.locals.username;
+  const userId = await getUserIdByUsername(username);
+
+  try {
+    const result = await prisma.chat.delete({
+      where: {
+        id: chatId,
+        userId,
+      },
+      select: {
+        chatName: true,
+      },
+    });
+    return res.status(200).json({ success: true, result });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: "Invalid Chat ID Else You aren't Owner" });
+  }
+};

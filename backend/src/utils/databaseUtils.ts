@@ -5,21 +5,28 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 import { queryMySQLProps, queryOracleProps, queryPostgresProps } from "../types/databaseTypes";
-import wrapAsync from "./wrapAsync";
 
 async function queryMySQL({ connectionString, query }: queryMySQLProps) {
-  const connection = await mysql.createConnection(connectionString);
-  const [rows] = await connection.execute(query);
-  await connection.end();
-  return rows;
+  try {
+    const connection = await mysql.createConnection(connectionString);
+    const [rows] = await connection.execute(query);
+    await connection.end();
+    return rows;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function queryPostgres({ connectionString, query }: queryPostgresProps) {
-  const client = new Client({ connectionString });
-  await client.connect();
-  const res = await client.query(query);
-  await client.end();
-  return res.rows;
+  try {
+    const client = new Client({ connectionString });
+    await client.connect();
+    const res = await client.query(query);
+    await client.end();
+    return res.rows;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function queryOracle({ connectionString, query }: queryOracleProps) {
@@ -169,7 +176,6 @@ export async function fetchOracleTablesAndColumns(connectionString: string) {
     connectString,
   });
 
-  // Fetch user-created tables, excluding system-generated ones
   const tables = await connection.execute(
     `
     SELECT table_name 
@@ -181,7 +187,6 @@ export async function fetchOracleTablesAndColumns(connectionString: string) {
     [user.toUpperCase()]
   );
 
-  // Fetch columns for the selected tables
   const columns = await connection.execute(
     `
     SELECT table_name, column_name, data_type 
@@ -193,7 +198,6 @@ export async function fetchOracleTablesAndColumns(connectionString: string) {
 
   await connection.close();
 
-  // Combine tables and columns into a structured format
   const tablesAndColumns = tables.rows.map((table: any) => {
     return {
       name: table[0],

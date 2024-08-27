@@ -4,6 +4,7 @@ import express from "express";
 import userRoute from "./routes/userRoute";
 import databaseRoute from "./routes/databaseRoute";
 import chatRoute from "./routes/chatRoute";
+import { errorHandler } from "./middlewares/errorHandler";
 
 configDotenv.config();
 const app = express();
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use("/api/user", userRoute);
 app.use("/api/database", databaseRoute);
 app.use("/api/chat", chatRoute);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server Listening On Port ${PORT}`);
