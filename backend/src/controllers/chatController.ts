@@ -1,4 +1,4 @@
-import { Request, Response, RequestHandler } from "express";
+import { Request, Response, RequestHandler, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 
 import { getUserIdByUsername } from "../utils/userUtils";
@@ -62,4 +62,20 @@ export const chatDestroy: RequestHandler = async (req: Request, res: Response) =
   } catch (error) {
     return res.status(400).json({ success: false, message: "Invalid Chat ID Else You aren't Owner" });
   }
+};
+
+export const chatList: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  const username = res.locals.username;
+  const userId = await getUserIdByUsername(username);
+
+  const result = await prisma.chat.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      id: true,
+      chatName: true,
+    },
+  });
+  return res.status(200).json({ status: true, result });
 };

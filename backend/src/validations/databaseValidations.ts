@@ -14,3 +14,8 @@ export const databaseNewSchema = z.object({
 export const databaseDestroySchema = z.object({
   databaseConnectionId: z.number().positive(),
 });
+
+export const databaseEditSchema = z.object({
+  connectionName: z.string().min(5, { message: "Minimum length should be 5" }),
+  connectionId: z.number().positive(),
+});

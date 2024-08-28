@@ -1,9 +1,10 @@
 import { z } from "zod";
-import { DatabaseCheckSchema, databaseDestroySchema, databaseNewSchema } from "../validations/databaseValidations";
+import { DatabaseCheckSchema, databaseDestroySchema, databaseEditSchema, databaseNewSchema } from "../validations/databaseValidations";
 
 export type databaseCheckBody = z.infer<typeof DatabaseCheckSchema>;
 export type databaseNewBody = z.infer<typeof databaseNewSchema>;
 export type databaseDestroyBody = z.infer<typeof databaseDestroySchema>;
+export type databaseEditBody = z.infer<typeof databaseEditSchema>;
 
 export interface queryMySQLProps {
   connectionString: string;
