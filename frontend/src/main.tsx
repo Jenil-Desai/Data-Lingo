@@ -5,9 +5,12 @@ import "./index.css";
 
 import { ThemeProvider } from "@material-tailwind/react";
 import { AuthProvider } from "./hooks/UseAuth";
+import { RecoilRoot } from "recoil";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <ThemeProvider>
-    <App />
-  </ThemeProvider>
+  <RecoilRoot>
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  </RecoilRoot>
 );

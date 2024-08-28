@@ -10,17 +10,34 @@ export const chatNew: RequestHandler = async (req: Request, res: Response) => {
   const { chatName, connectionName } = req.body;
   const username = res.locals.username;
   const userId = await getUserIdByUsername(username);
-  const dbConnectionId = await getConnectionIdByConnectionName(connectionName, userId);
 
-  const newChat = await prisma.chat.create({
-    data: {
-      chatName,
+  const chatCount = await prisma.chat.count({
+    where: {
       userId,
-      dbConnectionId,
     },
   });
 
-  return res.status(200).json({ success: true, newChat });
+  const user = await prisma.user.findFirst({
+    where: {
+      username,
+    },
+  });
+
+  if (chatCount < user!.chatLimit) {
+    const dbConnectionId = await getConnectionIdByConnectionName(connectionName, userId);
+
+    const newChat = await prisma.chat.create({
+      data: {
+        chatName,
+        userId,
+        dbConnectionId,
+      },
+    });
+
+    return res.status(200).json({ success: true, newChat });
+  } else {
+    return res.status(400).json({ success: false, error: "Chat Limited Reached" });
+  }
 };
 
 export const chatEdit: RequestHandler = async (req: Request, res: Response) => {

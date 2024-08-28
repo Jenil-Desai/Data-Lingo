@@ -9,6 +9,8 @@ import Login from "./pages/Login/Login";
 import AboutUs from "./pages/About Us/AboutUs";
 import ContactUs from "./pages/Contact Us/ContactUs";
 import Pricing from "./pages/Pricing/Pricing";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 export default function App() {
   return (
@@ -56,11 +58,21 @@ export default function App() {
             }
           />
           <Route
-            path="login"
+            path="/login"
             element={
               <Layout>
                 <Login />
               </Layout>
+            }
+          />
+          <Route
+            path="/Dashboard/*"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
             }
           />
           <Route

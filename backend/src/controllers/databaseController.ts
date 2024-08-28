@@ -31,71 +31,86 @@ export const databaseCheck: RequestHandler = async (req: Request, res: Response)
 
 export const databaseNew: RequestHandler = async (req: Request, res: Response) => {
   const { connectionName, connectionType, connectionString } = req.body;
+  const username = res.locals.username;
+  const userId = await getUserIdByUsername(username);
 
-  let result;
-  switch (connectionType.toLowerCase()) {
-    case "mysql":
-      result = await testMySQLConnection(connectionString);
-      break;
+  const dbCount = await prisma.databaseConnection.count({
+    where: {
+      userId,
+    },
+  });
 
-    case "postgres":
-      result = await testPostgresConnection(connectionString);
-      break;
+  const user = await prisma.user.findFirst({
+    where: {
+      username,
+    },
+  });
 
-    case "oracle":
-      result = await testOracleConnection(connectionString);
-      break;
-
-    default:
-      return res.status(400).json({ success: false, message: "Unsupported database type" });
-  }
-
-  if (result.success) {
-    const username = res.locals.username;
-    const userId = await getUserIdByUsername(username);
-    let tables;
-
+  if (dbCount < user!.connectionLimit) {
+    let result;
     switch (connectionType.toLowerCase()) {
-      case "postgres":
-        tables = await fetchPostgresTablesAndColumns(connectionString);
-        break;
       case "mysql":
-        tables = await fetchMySQLTablesAndColumns(connectionString);
+        result = await testMySQLConnection(connectionString);
         break;
+
+      case "postgres":
+        result = await testPostgresConnection(connectionString);
+        break;
+
       case "oracle":
-        tables = await fetchOracleTablesAndColumns(connectionString);
+        result = await testOracleConnection(connectionString);
+        break;
+
+      default:
+        return res.status(400).json({ success: false, message: "Unsupported database type" });
     }
 
-    // const salt = await bcrypt.genSalt(10);
-    // const hashedConnectionString = await bcrypt.hash(connectionString, salt);
+    if (result.success) {
+      const username = res.locals.username;
+      const userId = await getUserIdByUsername(username);
+      let tables;
 
-    const newConnection = await prisma.databaseConnection.create({
-      data: {
-        userId,
-        connectionName,
-        connectionString,
-        connectionType,
-        tables: {
-          create: tables.map((table: any) => ({
-            tableName: table.name,
-            columns: {
-              create: table.columns.map((column: any) => ({
-                columnName: column.name,
-                dataType: column.dataType,
-              })),
-            },
-          })),
+      switch (connectionType.toLowerCase()) {
+        case "postgres":
+          tables = await fetchPostgresTablesAndColumns(connectionString);
+          break;
+        case "mysql":
+          tables = await fetchMySQLTablesAndColumns(connectionString);
+          break;
+        case "oracle":
+          tables = await fetchOracleTablesAndColumns(connectionString);
+      }
+
+      const newConnection = await prisma.databaseConnection.create({
+        data: {
+          userId,
+          connectionName,
+          connectionString,
+          connectionType,
+          tables: {
+            create: tables.map((table: any) => ({
+              tableName: table.name,
+              columns: {
+                create: table.columns.map((column: any) => ({
+                  columnName: column.name,
+                  dataType: column.dataType,
+                })),
+              },
+            })),
+          },
         },
-      },
-      select: {
-        connectionName: true,
-        connectionType: true,
-      },
-    });
+        select: {
+          connectionName: true,
+          connectionType: true,
+        },
+      });
 
-    return res.status(200).json({ success: true, newConnection });
+      return res.status(200).json({ success: true, newConnection });
+    } else {
+      return res.json(result);
+    }
   } else {
-    return res.json(result);
+    return res.status(400).json({ status: false, error: "Connection Limit Reached" });
   }
 };
 
@@ -153,6 +168,8 @@ export const databaseList: RequestHandler = async (req: Request, res: Response, 
     select: {
       id: true,
       connectionName: true,
+      connectionString: true,
+      connectionType: true,
     },
   });
   return res.status(200).json({ status: true, result });

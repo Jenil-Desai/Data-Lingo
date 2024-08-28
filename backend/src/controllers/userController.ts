@@ -1,7 +1,10 @@
-import { RequestHandler, Request, Response } from "express";
+import { RequestHandler, Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { getUserIdByUsername } from "../utils/userUtils";
+import getQueryExecutionOverTime from "../utils/getQueryExecutionOverTime";
+import getDatabaseUsage from "../utils/getDatabaseUsage";
 
 const prisma = new PrismaClient();
 
@@ -78,4 +81,69 @@ export const userDestroy: RequestHandler = async (req: Request, res: Response) =
   } catch (error) {
     return res.status(400).json({ success: false, message: "Invalid Username" });
   }
+};
+
+export const userStats: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+  const username = res.locals.username;
+  const userId = await getUserIdByUsername(username);
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  const queryUsedTillNow = await prisma.message.count({
+    where: {
+      chat: {
+        userId,
+      },
+      sqlQuery: {
+        not: null,
+      },
+    },
+  });
+  const totalQueryExcludingCurrentMonth = await prisma.message.count({
+    where: {
+      chat: {
+        userId,
+      },
+      sqlQuery: {
+        not: null,
+      },
+      timestamp: {
+        not: {
+          gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+          lt: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1),
+        },
+      },
+    },
+  });
+  const totalQueryPercentageChange = ((queryUsedTillNow - totalQueryExcludingCurrentMonth) / (queryUsedTillNow + totalQueryExcludingCurrentMonth)) * 2;
+
+  const connectionUsed = await prisma.databaseConnection.count({
+    where: {
+      userId,
+    },
+  });
+  const connectionLimit = user!.connectionLimit;
+
+  const totalChats = await prisma.chat.count({
+    where: {
+      userId,
+    },
+  });
+  const chatLimit = user!.chatLimit;
+
+  const dailyQuery = user!.dailyQueryLimit;
+  const queryLimit = user!.queryLimit;
+
+  const currentPlan = JSON.stringify(user!.currentPlan);
+  const expiryDay = user!.planEndDate ? JSON.stringify(user!.planEndDate) : new Date().toLocaleDateString();
+  const currentDate = new Date();
+  const remDays = user!.planEndDate ? Math.round(currentDate.getTime() - user!.planEndDate!.getTime() / (1000 * 3600 * 24)) : 0;
+  const queryExecutionOverTime = await getQueryExecutionOverTime(user!.id);
+  const databaseUsage = await getDatabaseUsage(user!.id);
+
+  res.status(200).json({ queryUsedTillNow, totalQueryPercentageChange, connectionUsed, connectionLimit, totalChats, chatLimit, dailyQuery, queryLimit, currentPlan, expiryDay, remDays, queryExecutionOverTime, databaseUsage });
 };

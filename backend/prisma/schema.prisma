@@ -14,6 +14,12 @@ model User {
   username             String              @unique
   email                String              @unique
   Password             String
+  connectionLimit      Int                @default(1)
+  chatLimit            Int                @default(5)
+  queryLimit           Int                @default(10)
+  currentPlan          plans              @default(Starter)
+  dailyQueryLimit      Int                @default(0)
+  planEndDate          DateTime?
   chats                Chat[]              
   databaseConnections  DatabaseConnection[]
 }
@@ -67,4 +73,12 @@ model ColumnMetadata {
   table                TableMetadata      @relation(fields: [tableId], references: [id], onDelete: Cascade)
   columnName           String
   dataType             String
+}
+
+
+enum plans {
+  Starter
+  Essential
+  Professional
+  Enterprise
 }

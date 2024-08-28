@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "dailyQueryLimit" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "queryLimit" INTEGER NOT NULL DEFAULT 10;
