@@ -1,9 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { IconButton, SpeedDial, SpeedDialHandler, SpeedDialContent, SpeedDialAction, Typography } from "@material-tailwind/react";
-import { PlusIcon, HomeIcon, Square3Stack3DIcon } from "@heroicons/react/24/outline";
-import { useRecoilState } from "recoil";
-import { modalState } from "../store/atoms";
-import { LinkIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, HomeIcon, ChatBubbleLeftEllipsisIcon, LifebuoyIcon, LinkIcon } from "@heroicons/react/24/outline";
+import { newChatModal, newConnectionModal } from "../store/atoms";
+import { useSetRecoilState } from "recoil";
 
 interface classNameinterface {
   className: string;
@@ -16,7 +15,8 @@ interface optionsInterface {
 }
 
 export function SpeedDialBtn(className: classNameinterface) {
-  const [modal, setModal] = useRecoilState(modalState);
+  const setChatModal = useSetRecoilState(newChatModal);
+  const setConnectionModal = useSetRecoilState(newConnectionModal);
   const location = useLocation();
   const navigation = useNavigate();
   const labelProps = {
@@ -32,22 +32,56 @@ export function SpeedDialBtn(className: classNameinterface) {
       options = [
         {
           icon: <LinkIcon className="h-5 w-5" />,
-          label: "Connections",
-          onClick: () => navigation("connections"),
+          label: "Connection",
+          onClick: () => setConnectionModal(true),
+        },
+        {
+          icon: <ChatBubbleLeftEllipsisIcon className="h-5 w-5" />,
+          label: "Chat",
+          onClick: () => setChatModal(true),
+        },
+        {
+          icon: <LifebuoyIcon className="h-5 w-5" />,
+          label: "Help",
+          onClick: () => navigation("/contact-us"),
         },
       ];
       break;
     case "/dashboard/connections":
       options = [
         {
-          icon: <HomeIcon className="h-5 w-5" />,
-          label: "Home",
-          onClick: () => navigation("/dashboard"),
+          icon: <LinkIcon className="h-5 w-5" />,
+          label: "Connection",
+          onClick: () => setConnectionModal(true),
         },
         {
-          icon: <Square3Stack3DIcon className="h-5 w-5" />,
-          label: "Add",
-          onClick: () => setModal(true),
+          icon: <ChatBubbleLeftEllipsisIcon className="h-5 w-5" />,
+          label: "Chat",
+          onClick: () => setChatModal(true),
+        },
+        {
+          icon: <LifebuoyIcon className="h-5 w-5" />,
+          label: "Help",
+          onClick: () => navigation("/contact-us"),
+        },
+      ];
+      break;
+    case "/dashboard/chat":
+      options = [
+        {
+          icon: <LinkIcon className="h-5 w-5" />,
+          label: "Connection",
+          onClick: () => setConnectionModal(true),
+        },
+        {
+          icon: <ChatBubbleLeftEllipsisIcon className="h-5 w-5" />,
+          label: "Chat",
+          onClick: () => setChatModal(true),
+        },
+        {
+          icon: <LifebuoyIcon className="h-5 w-5" />,
+          label: "Help",
+          onClick: () => navigation("/contact-us"),
         },
       ];
       break;

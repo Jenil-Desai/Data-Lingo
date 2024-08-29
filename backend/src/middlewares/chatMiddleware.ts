@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { chatDestroyBoy, chatEditBody, chatNewBody } from "../types/chat";
-import { chatDestroySchema, chatEditSchema, chatNewSchema } from "../validations/chatValidations";
+import { chatEditBody, chatHistroyBody, chatNewBody } from "../types/chat";
+import { chatEditSchema, chatHistroySchema, chatNewSchema } from "../validations/chatValidations";
 
 export const validateChatNewBody = async (req: Request, res: Response, next: NextFunction) => {
   const body: chatNewBody = req.body;
@@ -22,10 +22,10 @@ export const validateChatEditBody = async (req: Request, res: Response, next: Ne
   next();
 };
 
-export const validateChatDestroyBody = async (req: Request, res: Response, next: NextFunction) => {
-  const body: chatDestroyBoy = req.body;
+export const validateChatHistroyBody = async (req: Request, res: Response, next: NextFunction) => {
+  const body: chatHistroyBody = req.body;
 
-  const result = chatDestroySchema.safeParse(body);
+  const result = chatHistroySchema.safeParse(body);
   if (!result.success) {
     return res.status(400).json({ status: false, error: result.error.issues[0].message });
   }

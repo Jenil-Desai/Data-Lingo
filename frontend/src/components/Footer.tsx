@@ -20,14 +20,18 @@ export function Footer() {
             </Typography>
           </li>
           <li>
-            <Typography as="a" href="#" color="blue-gray" className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500" placeholder={undefined}>
-              About Us
-            </Typography>
+            <Link to="/about-us">
+              <Typography as="a" href="#" color="blue-gray" className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500" placeholder={undefined}>
+                About Us
+              </Typography>
+            </Link>
           </li>
           <li>
-            <Typography as="a" href="#" color="blue-gray" className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500" placeholder={undefined}>
-              Contact Us
-            </Typography>
+            <Link to="/contact-us">
+              <Typography as="a" href="#" color="blue-gray" className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500" placeholder={undefined}>
+                Contact Us
+              </Typography>
+            </Link>
           </li>
         </ul>
       </div>

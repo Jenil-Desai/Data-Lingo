@@ -2,6 +2,7 @@ import { ChatBubbleBottomCenterTextIcon, LinkIcon, QuestionMarkCircleIcon } from
 import { ScaleIcon } from "@heroicons/react/16/solid";
 import { Typography } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
 import axios from "axios";
 
 import StatisticsChart from "../../../components/StatisticsChart";
@@ -10,10 +11,12 @@ import { useAuth } from "../../../hooks/UseAuth";
 import PlanStatusCard from "../../../components/PlanStatusCard";
 import DatabaseConnectionsCard from "../../../components/DatabaseConnectionCard";
 import QueryUsageCard from "../../../components/QueryUsageCard";
+import { ErrorAlert } from "../../../components/ErrorAlert";
+import { errrorAlert } from "../../../store/atoms";
 
 export default function Home() {
   const [stats, setStats] = useState({ queryUsedTillNow: 0, totalQueryPercentageChange: 0, connectionUsed: 0, connectionLimit: 0, totalChats: 0, chatLimit: 0, dailyQuery: 0, currentPlan: "Starter", queryLimit: 0, expiryDay: "", remDays: 0, queryExecutionOverTime: [], databaseUsage: [] });
-
+  const setErrorAlert = useSetRecoilState(errrorAlert);
   const auth = useAuth();
 
   useEffect(() => {
@@ -25,15 +28,15 @@ export default function Home() {
       })
       .then((res) => {
         setStats(res.data);
-        console.log(stats.databaseUsage);
       })
       .catch((error) => {
-        console.log(error);
+        setErrorAlert({ vis: true, msg: error.response.data.error });
       });
   }, []);
 
   return (
     <div className="w-full h-full mt-4 md:mt-0">
+      <ErrorAlert />
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4 w-full">
         <StatisticsCard
           icon={React.createElement(QuestionMarkCircleIcon, { className: "w-6 h-6 text-white" })}

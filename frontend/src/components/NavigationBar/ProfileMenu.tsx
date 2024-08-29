@@ -1,8 +1,9 @@
 import { ChevronDownIcon, LifebuoyIcon, PowerIcon, UserCircleIcon, WindowIcon } from "@heroicons/react/24/solid";
 import { Menu, MenuHandler, Button, Avatar, MenuList, MenuItem, Typography } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
-import React from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { createElement, useState } from "react";
+
+import { useAuth } from "../../hooks/UseAuth";
 
 interface ProfileMenuPropInterface {
   className: string;
@@ -10,7 +11,7 @@ interface ProfileMenuPropInterface {
 }
 
 export default function ProfileMenu({ className, placement }: ProfileMenuPropInterface) {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -54,7 +55,7 @@ export default function ProfileMenu({ className, placement }: ProfileMenuPropInt
             const isLastItem = key === profileMenuItems.length - 1;
             return (
               <MenuItem key={label} onClick={action} className={`flex items-center gap-2 rounded ${isLastItem ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10" : ""}`} placeholder={undefined}>
-                {React.createElement(icon, {
+                {createElement(icon, {
                   className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
                   strokeWidth: 2,
                 })}

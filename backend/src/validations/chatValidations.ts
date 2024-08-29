@@ -10,6 +10,6 @@ export const chatEditSchema = z.object({
   chatId: z.number().positive(),
 });
 
-export const chatDestroySchema = z.object({
+export const chatHistroySchema = z.object({
   chatId: z.number().positive(),
 });

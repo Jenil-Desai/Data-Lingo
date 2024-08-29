@@ -1,7 +1,6 @@
 import { Input, Option, Select, Button, Dialog, Textarea, IconButton, Typography, DialogBody, DialogHeader, DialogFooter } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useRecoilState } from "recoil";
-import { modalState } from "../store/atoms";
+import { RecoilState, useRecoilState } from "recoil";
 
 interface modalFormInterface {
   modalHeading: string;
@@ -9,9 +8,10 @@ interface modalFormInterface {
   modalBodyForm: JSX.Element;
   modalSubmitBtnText: string;
   modalSubmitBtnAction: () => void;
+  modalState: RecoilState<any>;
 }
 
-export default function ModalForm({ modalHeading, modalSubHeading, modalBodyForm, modalSubmitBtnText, modalSubmitBtnAction }: modalFormInterface) {
+export default function ModalForm({ modalHeading, modalSubHeading, modalBodyForm, modalSubmitBtnText, modalSubmitBtnAction, modalState }: modalFormInterface) {
   const [open, setOpen] = useRecoilState(modalState);
 
   const handleOpen = () => setOpen(!open);
@@ -26,8 +26,7 @@ export default function ModalForm({ modalHeading, modalSubHeading, modalBodyForm
         </DialogHeader>
         <DialogBody className="space-y-4 pb-6" placeholder={undefined} children={modalBodyForm} />
         <DialogFooter placeholder={undefined}>
-          <Button className="ml-auto" children={"Test"} placeholder={undefined} />
-          <Button className="ml-auto" onClick={modalSubmitBtnAction} placeholder={undefined} children={modalSubmitBtnText} />
+          <Button className="ml-auto" type="submit" onClick={modalSubmitBtnAction} placeholder={undefined} children={modalSubmitBtnText} />
         </DialogFooter>
       </Dialog>
     </>

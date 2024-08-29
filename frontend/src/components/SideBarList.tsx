@@ -1,12 +1,15 @@
-import { UserCircleIcon, Cog6ToothIcon, PowerIcon, ExclamationTriangleIcon, LinkIcon, HomeIcon, ChatBubbleBottomCenterTextIcon } from "@heroicons/react/24/solid";
+import { UserCircleIcon, PowerIcon, ExclamationTriangleIcon, LinkIcon, HomeIcon, ChatBubbleBottomCenterTextIcon } from "@heroicons/react/24/solid";
 import { List, ListItem, ListItemPrefix } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { useAuth } from "../hooks/UseAuth";
+import { useSetRecoilState } from "recoil";
+import { errrorAlert } from "../store/atoms";
 
 export default function SideBarList() {
+  const setErrorAlert = useSetRecoilState(errrorAlert);
   const [chatList, setChatList] = useState([]);
   const navigate = useNavigate();
   const auth = useAuth();
@@ -22,9 +25,13 @@ export default function SideBarList() {
         setChatList(res.data.result);
       })
       .catch((error) => {
-        console.log(error);
+        setErrorAlert({ vis: true, msg: error.reponse.data.error });
       });
   }, []);
+
+  function handleChatClick(chatId: number) {
+    navigate(`/dashboard/chat/${chatId}`);
+  }
 
   return (
     <List placeholder={undefined}>
@@ -34,7 +41,7 @@ export default function SideBarList() {
         </ListItemPrefix>
         Home
       </ListItem>
-      <ListItem placeholder={undefined} onClick={() => navigate("/dashboard")}>
+      <ListItem placeholder={undefined} onClick={() => navigate("connections")}>
         <ListItemPrefix placeholder={undefined}>
           <LinkIcon className="h-5 w-5" />
         </ListItemPrefix>
@@ -44,7 +51,7 @@ export default function SideBarList() {
       {chatList.length > 0 ? (
         chatList.map((chat: any) => {
           return (
-            <ListItem placeholder={undefined} key={chat.id}>
+            <ListItem placeholder={undefined} key={chat.id} onClick={() => handleChatClick(chat.id)}>
               <ListItemPrefix placeholder={undefined}>
                 <ChatBubbleBottomCenterTextIcon className="h-5 w-5" />
               </ListItemPrefix>
@@ -66,12 +73,6 @@ export default function SideBarList() {
           <UserCircleIcon className="h-5 w-5" />
         </ListItemPrefix>
         Profile
-      </ListItem>
-      <ListItem placeholder={undefined} onClick={() => navigate("settings")}>
-        <ListItemPrefix placeholder={undefined}>
-          <Cog6ToothIcon className="h-5 w-5" />
-        </ListItemPrefix>
-        Settings
       </ListItem>
       <ListItem placeholder={undefined} onClick={() => auth?.logout()}>
         <ListItemPrefix placeholder={undefined}>

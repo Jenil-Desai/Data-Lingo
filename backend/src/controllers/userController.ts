@@ -1,4 +1,4 @@
-import { RequestHandler, Request, Response, NextFunction } from "express";
+import { RequestHandler, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -83,7 +83,7 @@ export const userDestroy: RequestHandler = async (req: Request, res: Response) =
   }
 };
 
-export const userStats: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const userStats: RequestHandler = async (req: Request, res: Response) => {
   const username = res.locals.username;
   const userId = await getUserIdByUsername(username);
 
@@ -146,4 +146,68 @@ export const userStats: RequestHandler = async (req: Request, res: Response, nex
   const databaseUsage = await getDatabaseUsage(user!.id);
 
   res.status(200).json({ queryUsedTillNow, totalQueryPercentageChange, connectionUsed, connectionLimit, totalChats, chatLimit, dailyQuery, queryLimit, currentPlan, expiryDay, remDays, queryExecutionOverTime, databaseUsage });
+};
+
+export const userDetails: RequestHandler = async (req: Request, res: Response) => {
+  const username = res.locals.username;
+  const userId = await getUserIdByUsername(username);
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      fname: true,
+      lname: true,
+      username: true,
+      email: true,
+    },
+  });
+  res.status(200).json(user);
+};
+
+export const userUpdate: RequestHandler = async (req: Request, res: Response) => {
+  const { fname, lname, email, oldPassword, newPassword } = req.body;
+  const username = res.locals.username;
+  const userId = await getUserIdByUsername(username);
+
+  const oldUser = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (oldPassword && newPassword) {
+    const result = await bcrypt.compare(oldPassword, oldUser!.Password);
+    if (!result) {
+      return res.status(400).json({ error: "Old Password Does Not Match" });
+    }
+    const newHashedPassoword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        Password: newHashedPassoword,
+      },
+    });
+  }
+
+  const user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      fname: fname || oldUser!.fname,
+      lname: lname || oldUser!.lname,
+      email: email || oldUser!.email,
+    },
+    select: {
+      fname: true,
+      lname: true,
+      username: true,
+      email: true,
+    },
+  });
+  res.status(200).json(user);
 };

@@ -1,4 +1,4 @@
-import { Request, Response, RequestHandler, NextFunction } from "express";
+import { Request, Response, RequestHandler } from "express";
 import { PrismaClient } from "@prisma/client";
 
 import { getUserIdByUsername } from "../utils/userUtils";
@@ -61,7 +61,7 @@ export const chatEdit: RequestHandler = async (req: Request, res: Response) => {
 };
 
 export const chatDestroy: RequestHandler = async (req: Request, res: Response) => {
-  const { chatId } = req.body;
+  const chatId = Number(req.params.chatId);
   const username = res.locals.username;
   const userId = await getUserIdByUsername(username);
 
@@ -81,7 +81,7 @@ export const chatDestroy: RequestHandler = async (req: Request, res: Response) =
   }
 };
 
-export const chatList: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const chatList: RequestHandler = async (req: Request, res: Response) => {
   const username = res.locals.username;
   const userId = await getUserIdByUsername(username);
 
@@ -95,4 +95,34 @@ export const chatList: RequestHandler = async (req: Request, res: Response, next
     },
   });
   return res.status(200).json({ status: true, result });
+};
+
+export const chatHistroy: RequestHandler = async (req: Request, res: Response) => {
+  const { chatId } = req.body;
+  const username = res.locals.username;
+  const userId = await getUserIdByUsername(username);
+
+  const result = await prisma.chat.findFirst({
+    where: {
+      id: chatId,
+      userId,
+    },
+    select: {
+      id: true,
+      chatName: true,
+      dbConnection: true,
+      messages: {
+        select: {
+          id: true,
+          sender: true,
+          messageText: true,
+          sqlQuery: true,
+          queryResult: true,
+          timestamp: true,
+        },
+      },
+    },
+  });
+
+  res.status(200).json(result);
 };
