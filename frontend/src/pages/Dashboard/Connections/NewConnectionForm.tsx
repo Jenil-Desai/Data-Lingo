@@ -67,7 +67,7 @@ export default function NewConnectionForm() {
             onChange={(value) => setConnectionType(value as string)}
           >
             <Option value="mysql">MySQL</Option>
-            <Option value="postgressql">PostgreSQL</Option>
+            <Option value="postgres">PostgreSQL</Option>
             <Option value="oracle">Oracle</Option>
           </Select>
         </div>

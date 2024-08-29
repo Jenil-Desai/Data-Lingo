@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }: { children: React.ReactElement }) => 
 
   const login = async (data: string) => {
     setUser(data);
-    navigate("/");
+    navigate("/dashboard");
   };
 
   const logout = () => {

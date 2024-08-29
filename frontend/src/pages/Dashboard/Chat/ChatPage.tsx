@@ -1,5 +1,5 @@
-import { Card, Typography, Input, Button, Avatar, Menu, MenuHandler, MenuItem, MenuList } from "@material-tailwind/react";
-import { PaperAirplaneIcon, EllipsisHorizontalIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
+import { Card, Typography, Input, Button, Avatar, Menu, MenuHandler, MenuItem, MenuList, IconButton } from "@material-tailwind/react";
+import { PaperAirplaneIcon, EllipsisHorizontalIcon, TrashIcon, PencilIcon, ArrowDownIcon } from "@heroicons/react/24/solid";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { ReactNode, useEffect, useState } from "react";
 
@@ -39,6 +39,16 @@ export default function ChatPage() {
       .catch((error) => setErrorAlert({ vis: true, msg: error.response.data.error }))
       .finally(() => setIsDisable(false));
   }, [chatId]);
+
+  useEffect(() => {
+    if (chat.messages.length > 0) {
+      const latestMessage = chat.messages[chat.messages.length - 1];
+      const messageContainer = document.getElementById(`message-${latestMessage.id}`);
+      if (messageContainer) {
+        messageContainer.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [chat.messages]);
 
   function handleSubmit() {
     if (message.length < 5) {
@@ -148,7 +158,7 @@ export default function ChatPage() {
         <div className="flex-1 p-4 overflow-y-auto bg-gradient-to-br from-gray-100 to-gray-200">
           {chat.messages.map((msg) => {
             return msg.sender == "user" ? (
-              <div className="mb-4 flex justify-end items-end">
+              <div className="mb-4 flex justify-end items-end" id={`message-${msg.id}`}>
                 <div className="mr-2">
                   <Card className="bg-[#bee9e8] text-black p-3 max-w-xs md:max-w-md rounded-br-none shadow-md" placeholder={undefined}>
                     <Typography variant="small" placeholder={undefined}>
@@ -162,7 +172,7 @@ export default function ChatPage() {
                 <Avatar size="sm" src="https://via.placeholder.com/150" alt="Admin Avatar" variant="circular" placeholder={undefined} />
               </div>
             ) : (
-              <div className="mb-4 flex justify-start items-end">
+              <div className="mb-4 flex justify-start items-end" id={`message-${msg.id}`}>
                 <Avatar size="sm" src="https://via.placeholder.com/150" alt="User Avatar" variant="circular" className="mr-2" placeholder={undefined} />
                 <Card className="bg-white p-3 max-w-xs md:max-w-md rounded-bl-none shadow-md" placeholder={undefined}>
                   <Typography variant="small" color="blue-gray" placeholder={undefined}>
@@ -215,12 +225,29 @@ export default function ChatPage() {
 
         {/* Input Area */}
         <div className="p-4 bg-white border-t border-blue-gray-100 flex items-center space-x-4 rounded-xl">
+          <IconButton
+            variant="text"
+            color="blue-gray"
+            onClick={() => {
+              const latestMessage = chat.messages[chat.messages.length - 1];
+              const messageContainer = document.getElementById(`message-${latestMessage.id}`);
+              if (messageContainer) {
+                messageContainer.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+            placeholder={undefined}
+          >
+            <ArrowDownIcon className="h-6 w-6" />
+          </IconButton>
           <Input type="text" placeholder="Type your message..." className="flex-1" containerProps={{ className: "w-full" }} crossOrigin={undefined} onChange={(e) => setMessage(e.target.value)} value={message} />
           <Button variant="gradient" color="teal" className="flex items-center" placeholder={undefined} onClick={handleSubmit} disabled={isDisable}>
             <PaperAirplaneIcon className="h-5 w-5 mr-2" />
             Send
           </Button>
         </div>
+        <Typography placeholder={undefined} className="text-center mt-0 p-0" variant="small" color="gray">
+          Data Lingo can make mistakes. Check important info.
+        </Typography>
       </div>
     </div>
   );

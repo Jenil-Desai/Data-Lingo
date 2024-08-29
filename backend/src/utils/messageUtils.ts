@@ -22,6 +22,6 @@ ${dbConnection?.tables.map((table) => `- **Table:** ${table.tableName}\n` + tabl
 Generate a plain text SQL query that corresponds to the user input using the dynamic table and column details provided in the chat context. Ensure the query is optimized and accurate.
 
 ### Output:
-Return the SQL query as plain text without any backticks, newlines, or additional formatting.
+Return the SQL query for ${dbConnection.connectionType} as plain text without any backticks, newlines, or additional formatting.
 `;
 }

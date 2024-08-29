@@ -71,6 +71,19 @@ export function Profile() {
     }
   }
 
+  function handleUserDelete() {
+    axios
+      .delete(import.meta.env.VITE_REACT_BASE_URL + "/user", {
+        headers: { Authorization: auth.user },
+      })
+      .then(() => {
+        auth.logout();
+      })
+      .catch((error) => {
+        setErrorAlert({ vis: true, msg: error.response.data.error });
+      });
+  }
+
   return (
     <div className="w-full h-full">
       <ErrorAlert />
@@ -142,7 +155,7 @@ export function Profile() {
               <Typography variant="small" color="blue-gray" placeholder={undefined}>
                 This Action can't be undo
               </Typography>
-              <Button variant="gradient" color="red" placeholder={undefined}>
+              <Button variant="gradient" color="red" placeholder={undefined} onClick={handleUserDelete}>
                 Delete Account
               </Button>
             </div>

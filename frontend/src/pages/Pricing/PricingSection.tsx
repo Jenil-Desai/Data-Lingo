@@ -75,7 +75,7 @@ export function PricingSection() {
     {
       title: "Professional",
       desc: "Designed for users who need advanced features and higher usage limits.",
-      price: ["$", "30", "year"],
+      price: ["$", "30", "month"],
       options: [
         { icon: <CheckCircleIcon className="h-5 w-5 text-blue-gray-900" />, info: "Up To 10 Connection" },
         { icon: <CheckCircleIcon className="h-5 w-5 text-blue-gray-900" />, info: "Up To 50 Chats" },
@@ -87,7 +87,7 @@ export function PricingSection() {
     {
       title: "Enterprise",
       desc: "Comprehensive solution for businesses requiring unlimited access and premium support.",
-      price: ["$", "60", "year"],
+      price: ["$", "60", "month"],
       options: [
         { icon: <CheckCircleIcon className="h-5 w-5 text-blue-gray-900" />, info: "Unlimited Connection" },
         { icon: <CheckCircleIcon className="h-5 w-5 text-blue-gray-900" />, info: "Unlimited Chats" },

@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { Typography, Input, Button } from "@material-tailwind/react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import axios from "axios";
 
 import { useAuth } from "../../hooks/UseAuth";
+import { errrorAlert } from "../../store/atoms";
+import { ErrorAlert } from "../../components/ErrorAlert";
 
 export function Login() {
   const [passwordShown, setPasswordShown] = useState(false);
@@ -13,6 +16,7 @@ export function Login() {
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
   const auth = useAuth();
   const navigate = useNavigate();
+  const setErrorAlert = useSetRecoilState(errrorAlert);
 
   useEffect(() => {
     if (auth?.user) {
@@ -43,34 +47,30 @@ export function Login() {
       .then(async (res) => {
         await auth?.login(res.data.token);
       })
-      .catch((error: string) => {
-        // if (error.response) {
-        //   setAlert({ st: true, msg: error.response.data.error });
-        // } else if (error.request) {
-        //   setAlert({ st: true, msg: "Network Error" });
-        // } else {
-        //   setAlert({ st: true, msg: "Something Went Wrong" });
-        // }
+      .catch((error) => {
+        if (error.response) {
+          setErrorAlert({ vis: true, msg: error.response.data.error });
+        } else if (error.request) {
+          setErrorAlert({ vis: true, msg: "Network Error" });
+        } else {
+          setErrorAlert({ vis: true, msg: "Something Went Wrong" });
+        }
         console.log(error);
       });
   };
 
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 text-center h-full items-center p-8 overflow-hidden">
-      <div className="hidden md:block mr-6">
-        <img src="/images/login-image.jpg" alt="Login Image" className="w-full h-full object-cover max-w-full max-h-full rounded-xl" />
-      </div>
-      <div>
-        <Typography variant="h3" color="blue-gray" className="mb-2" placeholder={undefined}>
+    <section className="flex h-screen w-full justify-center items-center">
+      <div className="w-full max-w-md p-8 bg-white shadow-lg border border-blue-gray-100 rounded-xl">
+        <ErrorAlert />
+        <Typography variant="h3" color="blue-gray" className="mb-4 text-center">
           Log In
         </Typography>
-        <Typography className="mb-16 text-gray-600 font-normal text-[18px]" placeholder={undefined}>
-          Enter your email and password to sign in
-        </Typography>
-        <form action="#" className="mx-auto max-w-[24rem] text-left" onSubmit={handleSubmit}>
+        <Typography className="mb-8 text-gray-600 font-normal text-center text-[18px]">Enter your username and password to sign in</Typography>
+        <form action="#" className="text-left" onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label htmlFor="email">
-              <Typography variant="small" className="mb-2 block font-medium text-gray-900" placeholder={undefined}>
+            <label htmlFor="username">
+              <Typography variant="small" className="mb-2 block font-medium text-gray-900">
                 Your Email
               </Typography>
             </label>
@@ -85,13 +85,12 @@ export function Login() {
               labelProps={{
                 className: "hidden",
               }}
-              crossOrigin={undefined}
               onChange={handleUsernameInput}
             />
           </div>
           <div className="mb-6">
             <label htmlFor="password">
-              <Typography variant="small" className="mb-2 block font-medium text-gray-900" placeholder={undefined}>
+              <Typography variant="small" className="mb-2 block font-medium text-gray-900">
                 Password
               </Typography>
             </label>
@@ -106,32 +105,18 @@ export function Login() {
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
               type={passwordShown ? "text" : "password"}
               icon={<i onClick={togglePasswordVisiblity}>{passwordShown ? <EyeIcon className="h-5 w-5" /> : <EyeSlashIcon className="h-5 w-5" />}</i>}
-              crossOrigin={undefined}
               onChange={handlePasswordInput}
             />
           </div>
-          <Button color="gray" size="lg" className="mt-6" fullWidth placeholder={undefined} type="submit">
+          <Button color="gray" size="lg" className="mt-6" fullWidth type="submit">
             Log in
           </Button>
           <div className="!mt-4 flex justify-end">
-            <Typography as="a" href="#" color="blue-gray" variant="small" className="font-medium" placeholder={undefined}>
-              Forgot password
+            <Typography as="a" href="#" color="blue-gray" variant="small" className="font-medium">
+              Forgot password?
             </Typography>
           </div>
-          {/* <Button
-            variant="outlined"
-            size="lg"
-            className="mt-6 flex h-12 items-center justify-center gap-2"
-            fullWidth
-          >
-            <img
-              src={`https://www.material-tailwind.com/logos/logo-google.png`}
-              alt="google"
-              className="h-6 w-6"
-            />{" "}
-            sign in with google
-          </Button> */}
-          <Typography variant="small" color="gray" className="!mt-4 text-center font-normal" placeholder={undefined}>
+          <Typography variant="small" color="gray" className="!mt-4 text-center font-normal">
             Not registered?{" "}
             <Link to="/signup" className="font-medium text-gray-900">
               Create account
