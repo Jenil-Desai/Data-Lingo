@@ -11,6 +11,7 @@ import ContactUs from "./pages/Contact Us/ContactUs";
 import Pricing from "./pages/Pricing/Pricing";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Features from "./pages/Features/Features";
 
 export default function App() {
   return (
@@ -22,6 +23,14 @@ export default function App() {
             element={
               <Layout>
                 <Home />
+              </Layout>
+            }
+          />
+          <Route
+            path="/features"
+            element={
+              <Layout>
+                <Features />
               </Layout>
             }
           />

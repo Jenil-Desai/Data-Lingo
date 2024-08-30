@@ -7,6 +7,7 @@ import axios from "axios";
 import { useAuth } from "../hooks/UseAuth";
 import { useSetRecoilState } from "recoil";
 import { errrorAlert } from "../store/atoms";
+import { Emoji } from "emoji-picker-react";
 
 export default function SideBarList() {
   const setErrorAlert = useSetRecoilState(errrorAlert);
@@ -53,7 +54,7 @@ export default function SideBarList() {
           return (
             <ListItem placeholder={undefined} key={chat.id} onClick={() => handleChatClick(chat.id)}>
               <ListItemPrefix placeholder={undefined}>
-                <ChatBubbleBottomCenterTextIcon className="h-5 w-5" />
+                <Emoji unified={chat.chatEmoji} size={25} />
               </ListItemPrefix>
               {chat.chatName}
             </ListItem>

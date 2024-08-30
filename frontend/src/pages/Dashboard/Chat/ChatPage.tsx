@@ -6,14 +6,17 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "../../../hooks/UseAuth";
 import axios from "axios";
 import { useSetRecoilState } from "recoil";
-import { errrorAlert } from "../../../store/atoms";
+import { editChatModal, errrorAlert } from "../../../store/atoms";
 import { ErrorAlert } from "../../../components/ErrorAlert";
+import { Emoji } from "emoji-picker-react";
+import EditChatModal from "./EditChatModal";
 
 export default function ChatPage() {
-  const [chat, setChat] = useState({ id: 0, chatName: "", dbConnection: { connectionName: "", connectionType: "" }, messages: [{ id: 0, sender: "", messageText: "", sqlQuery: "", queryResult: "", timestamp: "" }] });
+  const [chat, setChat] = useState({ id: 0, chatEmoji: "", chatName: "", dbConnection: { connectionName: "", connectionType: "" }, messages: [{ id: 0, sender: "", messageText: "", sqlQuery: "", queryResult: "", timestamp: "" }] });
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isDisable, setIsDisable] = useState(false);
   const setErrorAlert = useSetRecoilState(errrorAlert);
+  const setModal = useSetRecoilState(editChatModal);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   let { chatId } = useParams();
@@ -93,7 +96,7 @@ export default function ChatPage() {
     {
       label: "Edit Chat",
       icon: PencilIcon,
-      action: () => navigate("/contact-us"),
+      action: () => setModal(true),
     },
     {
       label: "Delete Chat",
@@ -106,8 +109,9 @@ export default function ChatPage() {
             },
           })
           .then((res) => {
-            console.log(res);
+            setErrorAlert({ vis: true, msg: "Chat Deleted" });
             navigate("/dashboard");
+            window.location.reload();
           })
           .catch((error) => setErrorAlert({ vis: true, msg: error.response.data.error }));
       },
@@ -119,7 +123,10 @@ export default function ChatPage() {
       <div className="h-full flex flex-col border border-blue-gray-100 rounded-xl">
         <div className="flex items-center justify-between p-4 bg-blue-gray-50 rounded-xl">
           <div className="flex items-center">
-            <Avatar size="lg" src="https://via.placeholder.com/150" alt="User Avatar" variant="circular" className="mr-4" placeholder={undefined} />
+            {/* <Avatar size="lg" src="https://via.placeholder.com/150" alt="User Avatar" variant="circular" className="mr-4" placeholder={undefined} /> */}
+            <Typography variant="h1" className="mr-4" placeholder={undefined}>
+              <Emoji unified={chat.chatEmoji} size={50} />
+            </Typography>
             <div>
               <Typography variant="h6" color="blue-gray" placeholder={undefined}>
                 {chat.chatName}
@@ -158,7 +165,7 @@ export default function ChatPage() {
         <div className="flex-1 p-4 overflow-y-auto bg-gradient-to-br from-gray-100 to-gray-200">
           {chat.messages.map((msg) => {
             return msg.sender == "user" ? (
-              <div className="mb-4 flex justify-end items-end" id={`message-${msg.id}`}>
+              <div className="mb-4 flex justify-end items-end" id={`message-${msg.id}`} key={msg.id}>
                 <div className="mr-2">
                   <Card className="bg-[#bee9e8] text-black p-3 max-w-xs md:max-w-md rounded-br-none shadow-md" placeholder={undefined}>
                     <Typography variant="small" placeholder={undefined}>
@@ -172,8 +179,10 @@ export default function ChatPage() {
                 <Avatar size="sm" src="https://via.placeholder.com/150" alt="Admin Avatar" variant="circular" placeholder={undefined} />
               </div>
             ) : (
-              <div className="mb-4 flex justify-start items-end" id={`message-${msg.id}`}>
-                <Avatar size="sm" src="https://via.placeholder.com/150" alt="User Avatar" variant="circular" className="mr-2" placeholder={undefined} />
+              <div className="mb-4 flex justify-start items-end" id={`message-${msg.id}`} key={msg.id}>
+                <Typography variant="h3" className="mr-2" placeholder={undefined}>
+                  <Emoji unified="1f916" size={25} />
+                </Typography>
                 <Card className="bg-white p-3 max-w-xs md:max-w-md rounded-bl-none shadow-md" placeholder={undefined}>
                   <Typography variant="small" color="blue-gray" placeholder={undefined}>
                     {msg.sqlQuery}
@@ -249,6 +258,7 @@ export default function ChatPage() {
           Data Lingo can make mistakes. Check important info.
         </Typography>
       </div>
+      <EditChatModal CurrentChat={chat} />
     </div>
   );
 }

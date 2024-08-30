@@ -8,10 +8,11 @@ import { useAuth } from "../../../hooks/UseAuth";
 import { useSetRecoilState } from "recoil";
 import { errrorAlert } from "../../../store/atoms";
 import { ErrorAlert } from "../../../components/ErrorAlert";
+import { Emoji } from "emoji-picker-react";
 
 export function Profile() {
   const [stats, setStats] = useState({ queryUsedTillNow: 0, totalQueryPercentageChange: 0, connectionUsed: 0, connectionLimit: 0, totalChats: 0, chatLimit: 0, dailyQuery: 0, currentPlan: "Starter", queryLimit: 0, expiryDay: "", remDays: 0, queryExecutionOverTime: [], databaseUsage: [] });
-  const [userData, setUserData] = useState({ fname: "", lname: "", username: "", email: "" });
+  const [userData, setUserData] = useState({ fname: "", lname: "", username: "", email: "", profileEmjoi: "" });
   const [oldPassword, SetOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -101,7 +102,10 @@ export function Profile() {
         {/* Profile Information Section */}
         <Card className="p-6 mb-6 border border-blue-gray-100 rounded-xl" placeholder={undefined}>
           <div className="flex items-center mb-6">
-            <Avatar size="xl" src="https://via.placeholder.com/150" alt="User Avatar" variant="circular" className="mr-6" placeholder={undefined} />
+            {/* <Avatar size="xl" src="https://via.placeholder.com/150" alt="User Avatar" variant="circular" className="mr-6" placeholder={undefined} /> */}
+            <Typography variant="h1" className="mr-4" placeholder={undefined}>
+              <Emoji unified={userData.profileEmjoi} size={50} />
+            </Typography>
             <div>
               <Typography variant="h5" color="blue-gray" placeholder={undefined}>
                 {`${userData.fname} ${userData.lname}`}

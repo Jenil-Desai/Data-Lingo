@@ -1,42 +1,26 @@
-import { Typography, Select, Input, Option } from "@material-tailwind/react";
+import { Typography, Input } from "@material-tailwind/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { useAuth } from "../../../hooks/UseAuth";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { emojiCode, errrorAlert, newChatModal, newChatName, newConnectionName } from "../../../store/atoms";
+import { editChatModal, emojiCode, errrorAlert, newChatName } from "../../../store/atoms";
 import EmojiPicker from "emoji-picker-react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-export default function NewChatForm() {
-  const [databaseConnectionList, setDatabaseConnectionList] = useState([{ id: 0, connectionName: "", connectionString: "", connectionType: "" }]);
+export default function EditChatForm() {
+  const [chat, setChat] = useState({ id: 0, chatEmoji: "", chatName: "", dbConnection: { connectionName: "", connectionType: "" }, messages: [{ id: 0, sender: "", messageText: "", sqlQuery: "", queryResult: "", timestamp: "" }] });
   const [chatName, setChatName] = useRecoilState(newChatName);
-  const [connectionName, setConnectionName] = useRecoilState(newConnectionName);
-  const [emoji, setEmoji] = useRecoilState(emojiCode);
-  const setModal = useSetRecoilState(newChatModal);
   const setErrorAlert = useSetRecoilState(errrorAlert);
+  const [emoji, setEmoji] = useRecoilState(emojiCode);
+  const setModal = useSetRecoilState(editChatModal);
   const auth = useAuth();
+  let { chatId } = useParams();
 
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_BASE_URL + "/database", {
-        headers: {
-          Authorization: auth.user,
-        },
-      })
-      .then((res) => {
-        setDatabaseConnectionList(res.data.result);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
-  function handleSubmit() {
-    axios
       .post(
-        import.meta.env.VITE_REACT_BASE_URL + "/chat",
-        {
-          chatName,
-          connectionName,
-          chatEmoji: emoji,
-        },
+        import.meta.env.VITE_REACT_BASE_URL + "/chat/histroy",
+        { chatId: (chatId as any) * 1 },
         {
           headers: {
             Authorization: auth.user,
@@ -45,13 +29,42 @@ export default function NewChatForm() {
         }
       )
       .then((res) => {
+        setChat(res.data);
+        console.log(res.data);
+      })
+      .catch((error) => setErrorAlert({ vis: true, msg: error.response.data.error }));
+  }, [chatId]);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const payload: { chatId: number; chatName?: string; chatEmoji?: string } = {
+      chatId: (chatId as any) * 1,
+    };
+
+    if (chatName && chatName !== chat.chatName) {
+      payload.chatName = chatName;
+    }
+
+    if (emoji && emoji !== chat.chatEmoji) {
+      payload.chatEmoji = emoji;
+    }
+
+    axios
+      .patch(import.meta.env.VITE_REACT_BASE_URL + "/chat", payload, {
+        headers: {
+          Authorization: auth.user,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
         setModal(false);
         window.location.reload();
-        setErrorAlert({ vis: true, msg: "Chat Created" });
+        setErrorAlert({ vis: true, msg: "Chat Edited" });
       })
       .catch((error) => {
-        setModal(false);
         setErrorAlert({ vis: true, msg: error.response.data.error });
+        setModal(false);
       });
   }
 
@@ -76,6 +89,7 @@ export default function NewChatForm() {
             }}
             crossOrigin={undefined}
             onChange={(e) => setChatName(e.target.value)}
+            defaultValue={chat.chatName}
           />
         </div>
         <div className="mb-2 mt-2">
@@ -86,6 +100,7 @@ export default function NewChatForm() {
             emojiStyle="apple"
             skinTonePickerLocation="PREVIEW"
             reactionsDefaultOpen={true}
+            defaultEmoji={chat.chatEmoji}
             height={500}
             className="!w-full !border-[1.5px] !border-blue-gray-200/90 !border-t-blue-gray-200/90 bg-white text-gray-800 ring-4 ring-transparent placeholder:text-gray-600 focus:!border-primary focus:!border-t-blue-gray-900 group-hover:!border-primary"
             onReactionClick={(emoji) => {
@@ -101,27 +116,6 @@ export default function NewChatForm() {
               }
             }}
           />
-        </div>
-        <div>
-          <Typography variant="small" color="blue-gray" className="mb-2 text-left font-medium" placeholder={undefined}>
-            Database Connection
-          </Typography>
-          <Select
-            className="!w-full !border-[1.5px] !border-blue-gray-200/90 !border-t-blue-gray-200/90 bg-white text-gray-800 ring-4 ring-transparent placeholder:text-gray-600 focus:!border-primary focus:!border-t-blue-gray-900 group-hover:!border-primary"
-            placeholder="0"
-            labelProps={{
-              className: "hidden",
-            }}
-            onChange={(value) => setConnectionName(value as string)}
-          >
-            {databaseConnectionList.map((connection) => {
-              return (
-                <Option value={connection.connectionName} key={connection.id}>
-                  {connection.connectionName}
-                </Option>
-              );
-            })}
-          </Select>
         </div>
       </form>
     </>

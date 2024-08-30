@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id                   Int                 @id @default(autoincrement())
+  id                   Int                @id @default(autoincrement())
+  profileEmjoi         String             @default("1f603")
   fname                String
   lname                String
-  username             String              @unique
-  email                String              @unique
+  username             String             @unique
+  email                String             @unique
   Password             String
   connectionLimit      Int                @default(1)
   chatLimit            Int                @default(5)
@@ -27,6 +28,7 @@ model User {
 model Chat {
   id               Int                @id @default(autoincrement())
   chatName         String
+  chatEmoji        String             @default("1f4ac")
   userId           Int
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   dbConnectionId   Int

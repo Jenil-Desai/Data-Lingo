@@ -13,7 +13,8 @@ async function queryMySQL({ connectionString, query }: queryMySQLProps) {
     await connection.end();
     return rows;
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    return error;
   }
 }
 
@@ -25,7 +26,8 @@ async function queryPostgres({ connectionString, query }: queryPostgresProps) {
     await client.end();
     return res.rows;
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    return error;
   }
 }
 
@@ -35,6 +37,9 @@ async function queryOracle({ connectionString, query }: queryOracleProps) {
     connection = await oracledb.getConnection({ connectionString });
     const result = await connection.execute(query);
     return result.rows;
+  } catch (error) {
+    console.log(error);
+    return error;
   } finally {
     if (connection) {
       await connection.close();

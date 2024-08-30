@@ -161,6 +161,7 @@ export const userDetails: RequestHandler = async (req: Request, res: Response) =
       lname: true,
       username: true,
       email: true,
+      profileEmjoi: true,
     },
   });
   res.status(200).json(user);

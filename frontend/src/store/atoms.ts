@@ -37,3 +37,13 @@ export const errrorAlert = atom({
     msg: "",
   },
 });
+
+export const emojiCode = atom({
+  key: "emojiCode",
+  default: "",
+});
+
+export const editChatModal = atom({
+  key: "editChatModal",
+  default: false,
+});

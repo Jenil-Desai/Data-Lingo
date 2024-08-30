@@ -30,7 +30,11 @@ export default function NewConnectionModal() {
               headers: { Authorization: auth.user, "Content-Type": "application/json" },
             }
           )
-          .then(() => setModal(false))
+          .then(() => {
+            setModal(false);
+            window.location.reload();
+            setErrorAlert({ vis: true, msg: "Connection Created" });
+          })
           .catch((error: any) => {
             setModal(false);
             setErrorAlert({ vis: true, msg: error.response.data.error });

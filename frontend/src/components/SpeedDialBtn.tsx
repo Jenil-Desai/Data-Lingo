@@ -27,73 +27,23 @@ export function SpeedDialBtn(className: classNameinterface) {
 
   let options: optionsInterface[] = [];
 
-  switch (location.pathname) {
-    case "/dashboard":
-      options = [
-        {
-          icon: <LinkIcon className="h-5 w-5" />,
-          label: "Connection",
-          onClick: () => setConnectionModal(true),
-        },
-        {
-          icon: <ChatBubbleLeftEllipsisIcon className="h-5 w-5" />,
-          label: "Chat",
-          onClick: () => setChatModal(true),
-        },
-        {
-          icon: <LifebuoyIcon className="h-5 w-5" />,
-          label: "Help",
-          onClick: () => navigation("/contact-us"),
-        },
-      ];
-      break;
-    case "/dashboard/connections":
-      options = [
-        {
-          icon: <LinkIcon className="h-5 w-5" />,
-          label: "Connection",
-          onClick: () => setConnectionModal(true),
-        },
-        {
-          icon: <ChatBubbleLeftEllipsisIcon className="h-5 w-5" />,
-          label: "Chat",
-          onClick: () => setChatModal(true),
-        },
-        {
-          icon: <LifebuoyIcon className="h-5 w-5" />,
-          label: "Help",
-          onClick: () => navigation("/contact-us"),
-        },
-      ];
-      break;
-    case "/dashboard/chat":
-      options = [
-        {
-          icon: <LinkIcon className="h-5 w-5" />,
-          label: "Connection",
-          onClick: () => setConnectionModal(true),
-        },
-        {
-          icon: <ChatBubbleLeftEllipsisIcon className="h-5 w-5" />,
-          label: "Chat",
-          onClick: () => setChatModal(true),
-        },
-        {
-          icon: <LifebuoyIcon className="h-5 w-5" />,
-          label: "Help",
-          onClick: () => navigation("/contact-us"),
-        },
-      ];
-      break;
-    default:
-      options = [
-        {
-          icon: <HomeIcon className="h-5 w-5" />,
-          label: "Home",
-          onClick: () => navigation("/dashboard"),
-        },
-      ];
-  }
+  options = [
+    {
+      icon: <LinkIcon className="h-5 w-5" />,
+      label: "Connection",
+      onClick: () => setConnectionModal(true),
+    },
+    {
+      icon: <ChatBubbleLeftEllipsisIcon className="h-5 w-5" />,
+      label: "Chat",
+      onClick: () => setChatModal(true),
+    },
+    {
+      icon: <LifebuoyIcon className="h-5 w-5" />,
+      label: "Help",
+      onClick: () => navigation("/contact-us"),
+    },
+  ];
 
   return (
     <div className={`fixed bottom-0 right-0 mb-4 mr-4 z-20 ${className}`}>

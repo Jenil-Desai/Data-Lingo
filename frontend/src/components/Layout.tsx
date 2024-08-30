@@ -9,9 +9,9 @@ interface LayoutInterface {
 const Layout = ({ children }: LayoutInterface) => {
   const location = useLocation();
 
-  const noNavbarFooterPaths = ["/", "/pricing", "/about-us", "/contact-us", "/login", "/signup"];
+  const noNavbarFooterPaths = ["/", "/features", "/pricing", "/about-us", "/contact-us", "/login", "/signup"];
 
-  const showNavbarFooter = noNavbarFooterPaths.includes(location.pathname);
+  const showNavbarFooter = noNavbarFooterPaths.includes(location.pathname.toLowerCase());
 
   return (
     <>

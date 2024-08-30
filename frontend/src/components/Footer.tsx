@@ -15,9 +15,11 @@ export function Footer() {
             </Link>
           </li>
           <li>
-            <Typography as="a" href="#" color="blue-gray" className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500" placeholder={undefined}>
-              Features
-            </Typography>
+            <Link to="/features">
+              <Typography as="a" href="#" color="blue-gray" className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500" placeholder={undefined}>
+                Features
+              </Typography>
+            </Link>
           </li>
           <li>
             <Link to="/about-us">

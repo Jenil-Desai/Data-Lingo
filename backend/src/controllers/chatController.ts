@@ -7,7 +7,7 @@ import { getConnectionIdByConnectionName } from "../utils/databaseUtils";
 const prisma = new PrismaClient();
 
 export const chatNew: RequestHandler = async (req: Request, res: Response) => {
-  const { chatName, connectionName } = req.body;
+  const { chatName, connectionName, chatEmoji } = req.body;
   const username = res.locals.username;
   const userId = await getUserIdByUsername(username);
 
@@ -28,6 +28,7 @@ export const chatNew: RequestHandler = async (req: Request, res: Response) => {
 
     const newChat = await prisma.chat.create({
       data: {
+        chatEmoji,
         chatName,
         userId,
         dbConnectionId,
@@ -41,7 +42,7 @@ export const chatNew: RequestHandler = async (req: Request, res: Response) => {
 };
 
 export const chatEdit: RequestHandler = async (req: Request, res: Response) => {
-  const { chatName, chatId } = req.body;
+  const { chatName, chatId, chatEmoji } = req.body;
   try {
     const result = await prisma.chat.update({
       where: {
@@ -49,6 +50,7 @@ export const chatEdit: RequestHandler = async (req: Request, res: Response) => {
       },
       data: {
         chatName,
+        chatEmoji,
       },
       select: {
         chatName: true,
@@ -92,6 +94,7 @@ export const chatList: RequestHandler = async (req: Request, res: Response) => {
     select: {
       id: true,
       chatName: true,
+      chatEmoji: true,
     },
   });
   return res.status(200).json({ status: true, result });
@@ -109,6 +112,7 @@ export const chatHistroy: RequestHandler = async (req: Request, res: Response) =
     },
     select: {
       id: true,
+      chatEmoji: true,
       chatName: true,
       dbConnection: true,
       messages: {

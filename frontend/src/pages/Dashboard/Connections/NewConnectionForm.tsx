@@ -1,6 +1,6 @@
 import { Typography, Select, Input, Option } from "@material-tailwind/react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { newConnectionModal, newConnectionName, newConnectionString, newConnectionType } from "../../../store/atoms";
+import { errrorAlert, newConnectionModal, newConnectionName, newConnectionString, newConnectionType } from "../../../store/atoms";
 import axios from "axios";
 import { useAuth } from "../../../hooks/UseAuth";
 
@@ -9,6 +9,7 @@ export default function NewConnectionForm() {
   const [connectionType, setConnectionType] = useRecoilState(newConnectionType);
   const [connectionString, setConnectionString] = useRecoilState(newConnectionString);
   const setModal = useSetRecoilState(newConnectionModal);
+  const setErrorAlert = useSetRecoilState(errrorAlert);
   const auth = useAuth();
 
   function handleSubmit() {
@@ -27,8 +28,15 @@ export default function NewConnectionForm() {
           },
         }
       )
-      .then(() => setModal(false))
-      .catch((error) => console.log(error));
+      .then(() => {
+        setModal(false);
+        window.location.reload();
+        setErrorAlert({ vis: true, msg: "Connection Created" });
+      })
+      .catch((error) => {
+        setModal(false);
+        setErrorAlert({ vis: true, msg: error.response.data.error });
+      });
   }
 
   return (
