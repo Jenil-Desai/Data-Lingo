@@ -47,3 +47,8 @@ export const editChatModal = atom({
   key: "editChatModal",
   default: false,
 });
+
+export const editConnectionModal = atom({
+  key: "editConnectionModal",
+  default: false,
+});

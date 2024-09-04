@@ -51,7 +51,7 @@ export function NavBar() {
           <NavList />
           {auth?.user ? (
             <div className="flex w-full flex-nowrap items-center justify-center lg:hidden">
-              <ProfileMenu className={""} placement={"bottom-center"} />
+              <ProfileMenu className={""} placement={"bottom"} />
             </div>
           ) : (
             <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">

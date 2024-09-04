@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
-import { databaseCheckBody, databaseDestroyBody, databaseEditBody, databaseNewBody } from "../types/databaseTypes";
-import { DatabaseCheckSchema, databaseDestroySchema, databaseEditSchema, databaseNewSchema } from "../validations/databaseValidations";
+import { databaseCheckBody, databaseEditBody, databaseNewBody } from "../types/databaseTypes";
+import { DatabaseCheckSchema, databaseEditSchema, databaseNewSchema } from "../validations/databaseValidations";
 
 export const ValidateDatabaseCheckBody = async (req: Request, res: Response, next: NextFunction) => {
   const body: databaseCheckBody = req.body;
@@ -17,16 +17,6 @@ export const ValidateDatabaseNewBody = async (req: Request, res: Response, next:
   const body: databaseNewBody = req.body;
 
   const result = databaseNewSchema.safeParse(body);
-  if (!result.success) {
-    return res.status(400).json({ status: false, error: result.error.issues[0].message });
-  }
-  next();
-};
-
-export const ValidateDatabaseDestroyBody = async (req: Request, res: Response, next: NextFunction) => {
-  const body: databaseDestroyBody = req.body;
-
-  const result = databaseDestroySchema.safeParse(body);
   if (!result.success) {
     return res.status(400).json({ status: false, error: result.error.issues[0].message });
   }

@@ -115,14 +115,14 @@ export const databaseNew: RequestHandler = async (req: Request, res: Response) =
 };
 
 export const databaseDestroy: RequestHandler = async (req: Request, res: Response) => {
-  const { databaseConnectionId } = req.body;
+  const { connectionId } = req.params;
   const username = res.locals.username;
   const userId = await getUserIdByUsername(username);
 
   try {
     const result = await prisma.databaseConnection.delete({
       where: {
-        id: databaseConnectionId,
+        id: parseInt(connectionId),
         userId,
       },
       select: {

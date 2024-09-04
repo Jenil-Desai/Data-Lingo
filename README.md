@@ -1,174 +1,47 @@
-# 🎉 Welcome to **DataLingo** - Your AI-Powered Text-to-SQL Companion 🎉
+# Data Lingo (NL to SQL Query)
 
-Transforming the way you interact with databases, one conversation at a time! 🚀
+## What is Data Lingo?
 
----
+Data Lingo is an innovative platform that converts natural language (NL) into SQL queries. This tool is designed to simplify data interaction by allowing users to write queries in plain English, making data analysis more accessible for everyone, regardless of technical expertise. Whether you're managing databases, analyzing trends, or extracting specific insights, Data Lingo makes it easy to get the information you need quickly and efficiently.
 
-## 🌟 What is DataLingo?
+## Key Features
 
-**DataLingo** is an intelligent service that allows you to communicate with your databases using simple natural language. Forget about writing complex SQL queries—just ask DataLingo, and it will do the heavy lifting for you!
+- **Natural Language to SQL Conversion**: Translate simple English sentences into complex SQL queries.
+- **Automated Query Generation**: Generate SQL queries automatically based on user input, reducing the need for manual coding.
+- **Secure and Scalable**: Built with security and scalability in mind, ensuring your data is always safe and accessible.
+- **User-Friendly Interface**: Intuitive and easy-to-use interface that simplifies the query-building process.
+- **Real-time Analytics**: Get instant results and analytics on your data queries with visual insights.
+- **Customizable Solutions**: Tailor the platform to fit your specific business needs with flexible options.
 
-**Supports**:
-
-- 🐬 **MySQL**
-- 🐘 **PostgreSQL**
-- 🏛️ **Oracle**
-
----
-
-## ✨ Key Features
-
-- **Effortless Database Management**: Connect and manage multiple databases with ease.
-- **Natural Language Processing**: Turn plain text into SQL queries automatically.
-- **Schema-Aware Intelligence**: Tailored responses based on your database schema.
-- **Interactive Chat Interface**: Engage with your data through a chat-based UI.
-- **Real-Time Data Visualization**: See query results in an instant, beautifully formatted as tables.
-- **Secure & Scalable**: Built with security in mind, ready to grow with your needs.
-
----
-
-## 🚀 Getting Started
-
-### 📋 Prerequisites
-
-- **Node.js** (v14.x or later)
-- **PostgreSQL** (v12.x or later)
-- **Docker** (optional, for deployment)
-- **Oracle Client Libraries** (for Oracle DB support)
-
-### ⚙️ Installation Steps
-
-1. **Clone the Repo**:
-
-   ```bash
-   git clone https://github.com/Jenil-Desai/Data-Lingo.git
-   cd Data-Lingo
-   ```
-
-2. **Install Dependencies**:
-
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables**:
-   Create a `.env` file in the root directory with your configurations:
-
-   ```plaintext
-   DATABASE_URL=postgresql://username:password@localhost:5432/datalingo
-   JWT_SECRET=your_secret_key
-   ```
-
-4. **Run Migrations**:
-
-   ```bash
-   npx prisma migrate dev --name init
-   ```
-
-5. **Start the Service**:
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 🛠️ API Overview
-
-### 🔐 Authentication
-
-- **Sign Up**: `POST /api/user/register`
-- **Log In**: `POST /api/user/login`
-
-### 🌐 Database Connections
-
-- **Test Connection**: `POST /api/database/test-connection/`
-- **Add Connection**: `POST /api/database/`
-- **Delete Connection**: `DELETE /api/database/`
-
-### 💬 Chat & Queries
-
-- **New Chat**: `POST /api/chat`
-- **Edit Chat**: `PATCH /api/chat`
-- **Delete Chat**: `DELETE /api/chat`
-
----
-
-## 🖥️ Frontend Setup
-
-### ⚡ Quick Start
-
-1. **Navigate to the Frontend Directory**:
-
-   ```bash
-   cd frontend
-   ```
-
-2. **Install Dependencies**:
-
-   ```bash
-   npm install
-   ```
-
-3. **Start the Frontend**:
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 🐳 Deployment with Docker ![Coming Soon](https://img.shields.io/badge/Coming%20Soon-pink)
-
-1. **Build the Docker Images**:
-
-   ```bash
-   docker-compose build
-   ```
-
-2. **Start the Services**:
-
-   ```bash
-   docker-compose up -d
-   ```
-
-3. **Access the Application**:
-   - **Frontend**: `http://localhost:3000`
-   - **Backend API**: `http://localhost:4000`
-
----
-
-## Version Release
+## Version Releases
 
 Track the version releases and updates on our Notion page [Here](https://jenil-desai.notion.site/Version-Releases-Data-Lingo-78e5d6970c5b4f6b9ee107d56926bb5c?pvs=4)
 
----
+## Technology Stack
 
-## 💡 Contribution Guide ![Coming Soon](https://img.shields.io/badge/Coming%20Soon-pink)
+### Backend
 
-Want to make DataLingo even better? Here's how you can contribute:
+- **Node.js**: JavaScript runtime for building scalable server-side applications.
+- **Express.js**: Web framework for building APIs and handling HTTP requests.
+- **Gemini API**: Middleware for managing complex API interactions.
+- **Typescript**: Strongly-typed superset of JavaScript, providing static type definitions.
+- **JWT**: JSON Web Tokens for secure user authentication and authorization.
+- **Zod**: Schema validation library for ensuring data integrity and validation.
+- **Prisma ORM**: Type-safe ORM for seamless interaction with PostgreSQL databases.
+- **Node Cron**: Scheduler for running tasks at specific intervals.
+- **bcrypt**: Library for hashing passwords and securing user credentials.
 
-1. **Fork the Repo**
-2. **Create a New Branch** (`git checkout -b feature-branch`)
-3. **Commit Your Changes** (`git commit -m 'Add some feature'`)
-4. **Push to the Branch** (`git push origin feature-branch`)
-5. **Submit a Pull Request**
+### Frontend
 
-We welcome all contributions, from bug fixes to new features! 🌟
+- **React.js**: JavaScript library for building dynamic and interactive user interfaces.
+- **Recoil**: State management library for managing application state in React.
+- **React Emoji Picker**: Component for adding emoji support in the application.
+- **Heroicons**: Beautifully crafted icons for enhancing the visual appeal of the UI.
+- **ApexCharts**: Charting library for creating interactive data visualizations.
+- **Tailwind CSS**: Utility-first CSS framework for designing responsive layouts.
+- **Material Tailwind**: Material design components built with Tailwind CSS.
 
----
+### Database
 
-## 📜 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 📞 Contact & Support
-
-For support or inquiries, feel free to reach out:
-
-- **Email**: [jenildev91@gmail.com](mailto:jenildev91@gmail.com)
-- **LinkedIn**: [Jenil Desai](https://www.linkedin.com/in/desaijenil/)
-
----
-
-**DataLingo** - Making database management conversational and intuitive. Start your journey with us today! 🌐
+- **PostgreSQL**: Relational database management system for storing and managing application data.
+- **Prisma ORM**: Object-Relational Mapping tool for interacting with PostgreSQL using TypeScript.

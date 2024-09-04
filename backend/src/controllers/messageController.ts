@@ -28,7 +28,7 @@ export const messageNew: RequestHandler = async (req: Request, res: Response) =>
       return res.status(403).json({ success: false, message: "Unauthorized" });
     }
 
-    const userMessage = await prisma.message.create({
+    await prisma.message.create({
       data: {
         chatId: chat.id,
         sender: "user",
@@ -49,19 +49,48 @@ export const messageNew: RequestHandler = async (req: Request, res: Response) =>
       },
     });
 
+    const messages = await prisma.message.findMany({
+      where: {
+        chatId,
+      },
+      select: {
+        sender: true,
+        messageText: true,
+        sqlQuery: true,
+      },
+      orderBy: {
+        timestamp: "asc",
+      },
+    });
+
+    const formattedMessages = messages.map((message) => ({
+      role: message.sender === "user" ? "user" : "model",
+      parts: [{ text: message.messageText ? message.messageText : message.sqlQuery }],
+    }));
+
+    console.log(formattedMessages);
+
     const prompt = promptGenrate(dbConnection as any);
     try {
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      const result = await model.generateContent([messageText, prompt]);
+      const aiChat = model.startChat({
+        history: formattedMessages as any,
+      });
+      const result = await aiChat.sendMessage([messageText, prompt]);
       const query = result.response.text();
       const cleanQuery = cleanSQLQuery(query);
       const data = await executeQuery(dbConnection?.connectionType as string, dbConnection?.connectionString as string, cleanQuery);
       console.log(data);
+      // const result = await model.generateContent([messageText, prompt]);
+      // const query = result.response.text();
+      // const cleanQuery = cleanSQLQuery(query);
+      // const data = await executeQuery(dbConnection?.connectionType as string, dbConnection?.connectionString as string, cleanQuery);
+      // console.log(data);
       const systemMessage = await prisma.message.create({
         data: {
           chatId: chat.id,
-          sender: "system",
+          sender: "model",
           sqlQuery: cleanQuery,
           queryResult: JSON.stringify(data),
         },
@@ -80,5 +109,20 @@ export const messageNew: RequestHandler = async (req: Request, res: Response) =>
     }
   } else {
     return res.status(400).json({ error: "Daily Query Limit Reached" });
+  }
+};
+
+export const messageDestroy: RequestHandler = async (req: Request, res: Response) => {
+  const { messageId } = req.params;
+
+  try {
+    const msg = await prisma.message.delete({
+      where: {
+        id: parseInt(messageId),
+      },
+    });
+    res.status(200).json(msg);
+  } catch (error) {
+    res.status(400).json({ error });
   }
 };
